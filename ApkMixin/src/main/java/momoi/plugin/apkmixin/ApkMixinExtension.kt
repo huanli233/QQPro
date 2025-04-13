@@ -41,4 +41,6 @@ open class OutputExtension {
     var mixinApkFileName: String = DEFAULT_MIXIN_APK_NAME
 }
 
-internal fun Project.outputDir(extension: ApkMixinExtension) = projectDir.child(extension.output.outputDir)
+internal fun Project.outputDir(extension: ApkMixinExtension) = projectDir.child(extension.output.outputDir).apply {
+    if (!exists()) mkdirs()
+}

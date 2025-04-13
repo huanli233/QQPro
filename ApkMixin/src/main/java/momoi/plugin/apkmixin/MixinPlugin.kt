@@ -3,6 +3,7 @@ package momoi.plugin.apkmixin
 import com.android.apksigner.ApkSignerTool
 import com.wind.meditor.ManifestEditorMain
 import momoi.plugin.apkmixin.utils.child
+import momoi.plugin.apkmixin.utils.childFileOrCreate
 import momoi.plugin.apkmixin.utils.lifecycle
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
@@ -102,38 +103,45 @@ class MixinPlugin : Plugin<Project> {
     }
 
     private fun createRedirectFile(project: Project) {
-        project.layout.buildDirectory.file("intermediates/apk_ide_redirect_file/debug/createDebugApkListingFileRedirect/redirect.txt").get().asFile
-            .writeText("""
-                #- File Locator -
-                listingFile=../../../../../dist/output-metadata.json
-            """.trimIndent())
+        project.layout.buildDirectory.dir("intermediates/apk_ide_redirect_file/debug/createDebugApkListingFileRedirect").get().asFile.childFileOrCreate("redirect.txt").also {
+            it.writeText(
+                """
+                    #- File Locator -
+                    listingFile=../../../../../dist/output-metadata.json
+                """.trimIndent()
+            )
+        }
     }
 
     private fun createOutputMetadataFile(
         project: Project,
         fileName: String
     ) {
-        project.outputDir(extension).child("output-metadata.json").writeText("""
-            {
-              "version": 3,
-              "artifactType": {
-                "type": "APK",
-                "kind": "Directory"
-              },
-              "applicationId": "com.tencent.qqlite",
-              "variantName": "debug",
-              "elements": [
-                {
-                  "type": "SINGLE",
-                  "filters": [],
-                  "attributes": [],
-                  "outputFile": "$fileName"
-                }
-              ],
-              "elementType": "File",
-              "minSdkVersionForDexing": 24
+        project.outputDir(extension).childFileOrCreate("output-metadata.json").also {
+            if (it.exists() || it.createNewFile()) {
+                it.writeText("""
+                    {
+                      "version": 3,
+                      "artifactType": {
+                        "type": "APK",
+                        "kind": "Directory"
+                      },
+                      "applicationId": "com.tencent.qqlite",
+                      "variantName": "debug",
+                      "elements": [
+                        {
+                          "type": "SINGLE",
+                          "filters": [],
+                          "attributes": [],
+                          "outputFile": "$fileName"
+                        }
+                      ],
+                      "elementType": "File",
+                      "minSdkVersionForDexing": 24
+                    }
+                """.trimIndent())
             }
-        """.trimIndent())
+        }
     }
 }
 

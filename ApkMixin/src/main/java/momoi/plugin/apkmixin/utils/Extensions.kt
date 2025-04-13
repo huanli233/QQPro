@@ -20,10 +20,6 @@ private val logger: Logger = Logging.getLogger("ApkMixin")
 fun lifecycle(msg: String) = logger.lifecycle("[ApkMixin/L] $msg")
 fun info(msg: String) = logger.info("[ApkMixin/I] $msg")
 
-/* Files */
-
-fun File.child(name: String) = File(this, name)
-
 fun mergeDirectories(source: Path, target: Path) {
     require(Files.isDirectory(source)) { "Source must be a directory" }
     require(Files.isDirectory(target)) { "Target must be a directory" }
