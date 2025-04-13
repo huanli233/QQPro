@@ -47,6 +47,7 @@ import momoi.mod.qqpro.lib.textSize
 import momoi.mod.qqpro.lib.vertical
 import momoi.mod.qqpro.lib.width
 import momoi.mod.qqpro.removeAfter
+import momoi.mod.qqpro.util.runOnUi
 import momoi.mod.qqpro.warp
 import java.util.ArrayList
 
@@ -73,7 +74,9 @@ class DetailFragment(private val contact: Contact, private val data: MultiMsgDat
         data.getDetail {
             mMsgList.clear()
             mMsgList.addAll(it)
-            mRv.adapter?.notifyDataSetChanged()
+            runOnUi {
+                mRv.adapter?.notifyDataSetChanged()
+            }
         }
     }
 
